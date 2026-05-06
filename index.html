@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Harris County — Motivated Seller Leads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+/* ── Reset & Base ──────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0e13;
+  --surface:#12171f;
+  --card:#181e29;
+  --border:#232b3a;
+  --accent:#f5a623;
+  --accent2:#e84040;
+  --green:#2ecc71;
+  --blue:#3b9eff;
+  --text:#d8e0ec;
+  --muted:#5a6a84;
+  --mono:'Space Mono',monospace;
+  --sans:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:14px;
+  line-height:1.6;
+  min-height:100vh;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+header{
+  background:var(--surface);
+  border-bottom:2px solid var(--accent);
+  padding:0 24px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  height:60px;
+}
+.logo{
+  font-family:var(--mono);
+  font-size:15px;
+  font-weight:700;
+  color:var(--accent);
+  letter-spacing:0.08em;
+  white-space:nowrap;
+}
+.logo span{color:var(--muted);font-weight:400}
+.header-meta{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+  margin-left:auto;
+  text-align:right;
+  line-height:1.4;
+}
+.pulse{
+  display:inline-block;
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--green);
+  margin-right:6px;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Stats bar ────────────────────────────────────────────────────────── */
+.stats-bar{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:12px 24px;
+  display:flex;
+  gap:32px;
+  overflow-x:auto;
+}
+.stat{display:flex;flex-direction:column;gap:2px;min-width:fit-content}
+.stat-val{
+  font-family:var(--mono);
+  font-size:22px;
+  font-weight:700;
+  color:var(--accent);
+}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+/* ── Controls ─────────────────────────────────────────────────────────── */
+.controls{
+  padding:16px 24px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:360px}
+.search-wrap svg{
+  position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  width:14px;height:14px;stroke:var(--muted);fill:none;stroke-width:2;
+}
+input[type=search]{
+  width:100%;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:8px 12px 8px 34px;
+  border-radius:4px;
+  font-family:var(--sans);
+  font-size:13px;
+  outline:none;
+  transition:border-color .15s;
+}
+input[type=search]:focus{border-color:var(--accent)}
+select{
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:8px 12px;
+  border-radius:4px;
+  font-family:var(--sans);
+  font-size:13px;
+  outline:none;
+  cursor:pointer;
+}
+select:focus{border-color:var(--accent)}
+.btn{
+  padding:8px 16px;
+  border-radius:4px;
+  border:none;
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:500;
+  cursor:pointer;
+  transition:opacity .15s;
+}
+.btn:hover{opacity:.85}
+.btn-accent{background:var(--accent);color:#000}
+.btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.count-badge{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+  margin-left:auto;
+  white-space:nowrap;
+}
+
+/* ── Table ────────────────────────────────────────────────────────────── */
+.table-wrap{overflow-x:auto;padding:0 24px 80px}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:16px;
+  font-size:13px;
+}
+thead th{
+  font-family:var(--mono);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--muted);
+  background:var(--surface);
+  padding:10px 12px;
+  text-align:left;
+  white-space:nowrap;
+  border-bottom:2px solid var(--border);
+  position:sticky;top:60px;z-index:5;
+  cursor:pointer;user-select:none;
+}
+thead th:hover{color:var(--accent)}
+thead th.sort-asc::after{content:" ↑";color:var(--accent)}
+thead th.sort-desc::after{content:" ↓";color:var(--accent)}
+tbody tr{
+  border-bottom:1px solid var(--border);
+  transition:background .1s;
+}
+tbody tr:hover{background:var(--surface)}
+td{padding:10px 12px;vertical-align:top;max-width:220px}
+td.mono{font-family:var(--mono);font-size:11px}
+td.wrap{white-space:normal;word-break:break-word}
+.no-results{
+  text-align:center;
+  padding:60px;
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:13px;
+}
+
+/* ── Score bar ────────────────────────────────────────────────────────── */
+.score-wrap{display:flex;align-items:center;gap:8px}
+.score-num{
+  font-family:var(--mono);
+  font-size:13px;
+  font-weight:700;
+  min-width:28px;
+}
+.score-bar{
+  height:4px;
+  border-radius:2px;
+  flex:1;
+  background:var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+
+/* ── Flags ────────────────────────────────────────────────────────────── */
+.flags{display:flex;flex-wrap:wrap;gap:4px}
+.flag{
+  font-size:10px;
+  font-family:var(--mono);
+  padding:2px 6px;
+  border-radius:2px;
+  white-space:nowrap;
+  font-weight:700;
+  letter-spacing:.04em;
+}
+.flag-red{background:rgba(232,64,64,.18);color:#ff6b6b;border:1px solid rgba(232,64,64,.3)}
+.flag-orange{background:rgba(245,166,35,.15);color:#f5a623;border:1px solid rgba(245,166,35,.3)}
+.flag-blue{background:rgba(59,158,255,.15);color:#3b9eff;border:1px solid rgba(59,158,255,.3)}
+.flag-purple{background:rgba(160,100,255,.15);color:#c47fff;border:1px solid rgba(160,100,255,.3)}
+.flag-green{background:rgba(46,204,113,.15);color:#2ecc71;border:1px solid rgba(46,204,113,.3)}
+
+/* ── Doc type badge ───────────────────────────────────────────────────── */
+.doc-badge{
+  display:inline-block;
+  font-family:var(--mono);
+  font-size:10px;
+  font-weight:700;
+  padding:2px 7px;
+  border-radius:3px;
+  background:var(--border);
+  color:var(--accent);
+  letter-spacing:.05em;
+}
+
+/* ── Links ────────────────────────────────────────────────────────────── */
+a.rec-link{
+  color:var(--blue);
+  text-decoration:none;
+  font-family:var(--mono);
+  font-size:11px;
+}
+a.rec-link:hover{text-decoration:underline}
+
+/* ── Export bar ───────────────────────────────────────────────────────── */
+.export-bar{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  padding:12px 24px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  z-index:50;
+}
+.export-bar-label{font-size:12px;color:var(--muted);margin-right:auto}
+
+/* ── Filter pills ─────────────────────────────────────────────────────── */
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{
+  font-size:11px;
+  font-family:var(--mono);
+  padding:4px 10px;
+  border-radius:20px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--muted);
+  cursor:pointer;
+  transition:all .15s;
+}
+.pill:hover,.pill.active{
+  background:var(--accent);
+  color:#000;
+  border-color:var(--accent);
+}
+
+/* ── Loading ──────────────────────────────────────────────────────────── */
+#loading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:300px;
+  font-family:var(--mono);
+  color:var(--muted);
+  font-size:13px;
+  gap:12px;
+}
+.spinner{
+  width:20px;height:20px;
+  border:2px solid var(--border);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Amount ───────────────────────────────────────────────────────────── */
+.amount{font-family:var(--mono);font-size:12px;color:var(--green)}
+.amount-high{color:#ff6b6b}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">HARRIS&nbsp;COUNTY <span>/ MOTIVATED SELLER LEADS</span></div>
+  <div class="header-meta">
+    <div><span class="pulse"></span>AUTO-REFRESHED DAILY</div>
+    <div id="hdr-date" style="margin-top:2px"></div>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-val" id="s-total">—</span><span class="stat-lbl">Total Leads</span></div>
+  <div class="stat"><span class="stat-val" id="s-addr">—</span><span class="stat-lbl">With Address</span></div>
+  <div class="stat"><span class="stat-val" id="s-lp">—</span><span class="stat-lbl">Lis Pendens</span></div>
+  <div class="stat"><span class="stat-val" id="s-fc">—</span><span class="stat-lbl">Foreclosure</span></div>
+  <div class="stat"><span class="stat-val" id="s-lien">—</span><span class="stat-lbl">Liens</span></div>
+  <div class="stat"><span class="stat-val" id="s-prob">—</span><span class="stat-lbl">Probate</span></div>
+  <div class="stat"><span class="stat-val" id="s-avg">—</span><span class="stat-lbl">Avg Score</span></div>
+  <div class="stat"><span class="stat-val" id="s-range">—</span><span class="stat-lbl">Date Range</span></div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" id="q" placeholder="Search owner, address, doc #…"/>
+  </div>
+
+  <div class="pills" id="cat-pills">
+    <span class="pill active" data-cat="">All Types</span>
+    <span class="pill" data-cat="lis_pendens">Lis Pendens</span>
+    <span class="pill" data-cat="foreclosure">Foreclosure</span>
+    <span class="pill" data-cat="judgment">Judgment</span>
+    <span class="pill" data-cat="tax_lien">Tax Lien</span>
+    <span class="pill" data-cat="lien">Lien</span>
+    <span class="pill" data-cat="probate">Probate</span>
+    <span class="pill" data-cat="tax_deed">Tax Deed</span>
+  </div>
+
+  <select id="score-min">
+    <option value="0">Any Score</option>
+    <option value="50">Score ≥ 50</option>
+    <option value="65">Score ≥ 65</option>
+    <option value="80">Score ≥ 80</option>
+  </select>
+
+  <select id="sort-by">
+    <option value="score_desc">Score ↓</option>
+    <option value="score_asc">Score ↑</option>
+    <option value="filed_desc">Filed ↓</option>
+    <option value="filed_asc">Filed ↑</option>
+    <option value="amount_desc">Amount ↓</option>
+  </select>
+
+  <span class="count-badge" id="count-badge">— records</span>
+</div>
+
+<div id="loading"><div class="spinner"></div>Loading records…</div>
+
+<div class="table-wrap" id="table-wrap" style="display:none">
+  <table>
+    <thead>
+      <tr>
+        <th>Score</th>
+        <th>Doc #</th>
+        <th>Type</th>
+        <th>Filed</th>
+        <th>Owner / Grantor</th>
+        <th>Property Address</th>
+        <th>Mailing Address</th>
+        <th>Amount</th>
+        <th>Flags</th>
+        <th>Link</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="no-results" id="no-results" style="display:none">No records match your filters.</div>
+</div>
+
+<div class="export-bar">
+  <span class="export-bar-label" id="export-label">Harris County Clerk Public Records</span>
+  <button class="btn btn-ghost" onclick="exportCSV()">⬇ Export GHL CSV</button>
+  <button class="btn btn-accent" onclick="exportCSV(true)">⬇ All Columns CSV</button>
+</div>
+
+<script>
+/* ── Data ──────────────────────────────────────────────────────────────── */
+let ALL = [];
+let FILTERED = [];
+
+const FLAG_CLASS = {
+  "Lis pendens":     "flag-red",
+  "Pre-foreclosure": "flag-red",
+  "Judgment lien":   "flag-orange",
+  "Tax lien":        "flag-orange",
+  "Mechanic lien":   "flag-blue",
+  "Probate / estate":"flag-purple",
+  "LLC / corp owner":"flag-blue",
+  "New this week":   "flag-green",
+};
+
+function scoreColor(s){
+  if(s>=80) return "#ff6b6b";
+  if(s>=60) return "#f5a623";
+  if(s>=40) return "#3b9eff";
+  return "#5a6a84";
+}
+
+function fmtAmount(v){
+  if(!v && v!==0) return "";
+  return "$"+Number(v).toLocaleString("en-US",{maximumFractionDigits:0});
+}
+
+function fmtDate(d){
+  if(!d) return "";
+  try{
+    const dt=new Date(d+"T00:00:00");
+    return dt.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+  }catch{return d}
+}
+
+function renderFlags(flags){
+  if(!flags||!flags.length) return "";
+  return '<div class="flags">'+flags.map(f=>{
+    const cls=FLAG_CLASS[f]||"flag-blue";
+    return `<span class="flag ${cls}">${f}</span>`;
+  }).join("")+"</div>";
+}
+
+function renderRow(r){
+  const sc=r.score||0;
+  const propAddr = [r.prop_address,r.prop_city,r.prop_state,r.prop_zip].filter(Boolean).join(", ");
+  const mailAddr = [r.mail_address,r.mail_city,r.mail_state,r.mail_zip].filter(Boolean).join(", ");
+  const amtHigh  = r.amount && r.amount > 100000;
+
+  return `<tr>
+    <td>
+      <div class="score-wrap">
+        <span class="score-num" style="color:${scoreColor(sc)}">${sc}</span>
+        <div class="score-bar"><div class="score-fill" style="width:${sc}%;background:${scoreColor(sc)}"></div></div>
+      </div>
+    </td>
+    <td class="mono">${escHtml(r.doc_num||"")}</td>
+    <td><span class="doc-badge">${escHtml(r.doc_type||"")}</span><br/><span style="color:var(--muted);font-size:10px">${escHtml(r.cat_label||"")}</span></td>
+    <td class="mono">${fmtDate(r.filed)}</td>
+    <td class="wrap">${escHtml(r.owner||"—")}</td>
+    <td class="wrap" style="color:${propAddr?"var(--text)":"var(--muted)"}">${escHtml(propAddr||"—")}</td>
+    <td class="wrap" style="color:${mailAddr?"var(--text)":"var(--muted)"}">${escHtml(mailAddr||"—")}</td>
+    <td class="${amtHigh?"amount-high":"amount"}">${fmtAmount(r.amount)}</td>
+    <td>${renderFlags(r.flags)}</td>
+    <td>${r.clerk_url?`<a class="rec-link" href="${escHtml(r.clerk_url)}" target="_blank" rel="noopener">View ↗</a>`:"—"}</td>
+  </tr>`;
+}
+
+function escHtml(s){
+  return String(s||"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+/* ── Stats ─────────────────────────────────────────────────────────────── */
+function updateStats(data){
+  const recs=data.records||[];
+  document.getElementById("s-total").textContent=recs.length.toLocaleString();
+  document.getElementById("s-addr").textContent=(data.with_address||0).toLocaleString();
+  document.getElementById("s-lp").textContent=recs.filter(r=>r.cat==="lis_pendens").length;
+  document.getElementById("s-fc").textContent=recs.filter(r=>r.cat==="foreclosure").length;
+  document.getElementById("s-lien").textContent=recs.filter(r=>["lien","tax_lien","judgment"].includes(r.cat)).length;
+  document.getElementById("s-prob").textContent=recs.filter(r=>r.cat==="probate").length;
+  const avg=recs.length?Math.round(recs.reduce((a,b)=>a+(b.score||0),0)/recs.length):0;
+  document.getElementById("s-avg").textContent=avg;
+  if(data.date_range){
+    document.getElementById("s-range").textContent=
+      fmtDate(data.date_range.start)+" – "+fmtDate(data.date_range.end);
+  }
+  if(data.fetched_at){
+    const d=new Date(data.fetched_at);
+    document.getElementById("hdr-date").textContent=
+      "Updated "+d.toLocaleDateString("en-US",{month:"short",day:"numeric"})+" "+
+      d.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})+" UTC";
+  }
+  document.getElementById("export-label").textContent=
+    `Harris County Clerk · ${recs.length} leads · ${data.date_range?.start||""} to ${data.date_range?.end||""}`;
+}
+
+/* ── Filter & Render ───────────────────────────────────────────────────── */
+let catFilter="", scoreMin=0, qFilter="", sortKey="score_desc";
+
+function applyFilters(){
+  const q=qFilter.toLowerCase();
+  FILTERED=ALL.filter(r=>{
+    if(catFilter && r.cat!==catFilter) return false;
+    if((r.score||0)<scoreMin) return false;
+    if(q){
+      const blob=[r.owner,r.grantee,r.doc_num,r.prop_address,r.mail_address,r.doc_type,r.cat_label].join(" ").toLowerCase();
+      if(!blob.includes(q)) return false;
+    }
+    return true;
+  });
+
+  // sort
+  FILTERED.sort((a,b)=>{
+    switch(sortKey){
+      case "score_asc":  return (a.score||0)-(b.score||0);
+      case "score_desc": return (b.score||0)-(a.score||0);
+      case "filed_desc": return (b.filed||"").localeCompare(a.filed||"");
+      case "filed_asc":  return (a.filed||"").localeCompare(b.filed||"");
+      case "amount_desc":return (b.amount||0)-(a.amount||0);
+    }
+    return 0;
+  });
+
+  document.getElementById("count-badge").textContent=
+    FILTERED.length.toLocaleString()+" records";
+
+  const tbody=document.getElementById("tbody");
+  if(!FILTERED.length){
+    tbody.innerHTML="";
+    document.getElementById("no-results").style.display="block";
+  } else {
+    document.getElementById("no-results").style.display="none";
+    tbody.innerHTML=FILTERED.map(renderRow).join("");
+  }
+}
+
+/* ── Export CSV ────────────────────────────────────────────────────────── */
+function exportCSV(full=false){
+  const cols=full
+    ?["doc_num","doc_type","filed","cat_label","owner","grantee","amount","legal",
+      "prop_address","prop_city","prop_state","prop_zip",
+      "mail_address","mail_city","mail_state","mail_zip",
+      "clerk_url","flags","score"]
+    :["First Name","Last Name",
+      "Mailing Address","Mailing City","Mailing State","Mailing Zip",
+      "Property Address","Property City","Property State","Property Zip",
+      "Lead Type","Document Type","Date Filed","Document Number",
+      "Amount/Debt Owed","Seller Score","Motivated Seller Flags",
+      "Source","Public Records URL"];
+
+  const rows=[cols.join(",")];
+  for(const r of FILTERED){
+    let row;
+    if(full){
+      row=cols.map(c=>{
+        let v=r[c]??"";
+        if(Array.isArray(v)) v=v.join(" | ");
+        return `"${String(v).replace(/"/g,'""')}"`;
+      });
+    } else {
+      const parts=(r.owner||"").replace(","," ").split(/\s+/);
+      row=[
+        parts[0]||"", parts.slice(1).join(" "),
+        r.mail_address||"",r.mail_city||"",r.mail_state||"",r.mail_zip||"",
+        r.prop_address||"",r.prop_city||"",r.prop_state||"",r.prop_zip||"",
+        r.cat_label||"",r.doc_type||"",r.filed||"",r.doc_num||"",
+        r.amount||"",r.score||0,
+        (r.flags||[]).join(" | "),
+        "Harris County Clerk",
+        r.clerk_url||"",
+      ].map(v=>`"${String(v).replace(/"/g,'""')}"`);
+    }
+    rows.push(row.join(","));
+  }
+
+  const blob=new Blob([rows.join("\n")],{type:"text/csv"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`harris_leads_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+/* ── Event Listeners ───────────────────────────────────────────────────── */
+document.getElementById("q").addEventListener("input",e=>{
+  qFilter=e.target.value;
+  applyFilters();
+});
+document.getElementById("score-min").addEventListener("change",e=>{
+  scoreMin=+e.target.value;
+  applyFilters();
+});
+document.getElementById("sort-by").addEventListener("change",e=>{
+  sortKey=e.target.value;
+  applyFilters();
+});
+document.getElementById("cat-pills").addEventListener("click",e=>{
+  const pill=e.target.closest(".pill");
+  if(!pill) return;
+  document.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
+  pill.classList.add("active");
+  catFilter=pill.dataset.cat;
+  applyFilters();
+});
+
+/* ── Load Data ─────────────────────────────────────────────────────────── */
+fetch("records.json?t="+Date.now())
+  .then(r=>{
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    return r.json();
+  })
+  .then(data=>{
+    ALL=data.records||[];
+    updateStats(data);
+    document.getElementById("loading").style.display="none";
+    document.getElementById("table-wrap").style.display="block";
+    applyFilters();
+  })
+  .catch(err=>{
+    document.getElementById("loading").innerHTML=
+      `<div style="color:var(--accent2)">⚠ Could not load records.json<br/><small style="color:var(--muted)">${err.message}</small></div>`;
+  });
+</script>
+</body>
+</html>
